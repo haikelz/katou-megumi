@@ -13,11 +13,12 @@ type Discord struct {
 func NewDiscord(token string) *Discord {
 	client, err := discordgo.New("Bot " + token)
 	if err != nil {
-		log.Fatalf("Failed to create Discord client: %v", err)
+		log.Fatalf("Failed to initialize Discord client: %v", err)
 		return nil
 	}
 
 	client.StateEnabled = true
+	client.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentsDirectMessages
 
 	return &Discord{
 		Client: client,

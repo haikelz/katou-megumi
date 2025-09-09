@@ -2,7 +2,7 @@ package utils
 
 import (
 	"katou-megumi/pkg/configs"
-	"katou-megumi/pkg/entities"
+	entities "katou-megumi/pkg/entities/generated"
 	"log"
 
 	"github.com/spf13/viper"

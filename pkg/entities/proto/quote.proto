@@ -1,0 +1,22 @@
+syntax = "proto3";
+package entities;
+
+option go_package = "katou_megumi/pkg/entities/generated";
+
+message Qoute {
+	string english = 1;
+	string indo = 2;
+	string Character = 3;
+	string anime = 4; 
+}
+
+message QuoteResponse {
+	bool sukses = 1;
+	bool next = 2;
+	repeated Qoute result = 3;
+}
+
+message QuotesResponse {
+	bool sukses = 1;
+	repeated Qoute result = 2;
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package entities;
+
+option go_package = "katou_megumi/pkg/entities/generated";
+
+message Doa {
+    string id = 1;
+    string doa = 2;
+    string ayat = 3;
+    string latin = 4; 
+    string artinya = 5;
+}

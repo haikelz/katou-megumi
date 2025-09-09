@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"katou-megumi/pkg/entities"
+	entities "katou-megumi/pkg/entities/generated"
 	"katou-megumi/pkg/utils"
 	"net/http"
 
@@ -42,7 +42,7 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 
 	removeBgData := entities.RemoveBgRequest{ImageFileB64: imageBase64, BgColor: command}
 
-	jsonData, err := json.Marshal(removeBgData)
+	jsonData, err := json.Marshal(&removeBgData)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error marshalling data", logger)
 		logger.Error("Error marshalling data", zap.Error(err))
@@ -90,8 +90,8 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 	var apiResponseAlt entities.RemoveBgResponseAlt
 	var resultBase64 string
 
-	if err := json.Unmarshal(body, &apiResponse); err == nil && apiResponse.Data.Result_b64 != "" {
-		resultBase64 = apiResponse.Data.Result_b64
+	if err := json.Unmarshal(body, &apiResponse); err == nil && apiResponse.Data != nil && apiResponse.Data.ResultB64 != "" {
+		resultBase64 = apiResponse.Data.ResultB64
 	} else {
 		if err := json.Unmarshal(body, &apiResponseAlt); err == nil && apiResponseAlt.Result != "" {
 			resultBase64 = apiResponseAlt.Result

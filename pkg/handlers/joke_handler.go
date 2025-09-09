@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"katou-megumi/pkg/entities"
+	entities "katou-megumi/pkg/entities/generated"
 	"katou-megumi/pkg/utils"
 
 	"github.com/bwmarrin/discordgo"

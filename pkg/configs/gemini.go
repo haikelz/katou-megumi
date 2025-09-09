@@ -12,7 +12,6 @@ func NewGemini(ctx context.Context, apiKey string) *genai.Client {
 		APIKey:  apiKey,
 		Backend: genai.BackendGeminiAPI,
 	})
-
 	if err != nil {
 		zap.L().Error("Failed to create Gemini client", zap.Error(err))
 		panic(err)

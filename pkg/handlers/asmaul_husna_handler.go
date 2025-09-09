@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"katou-megumi/pkg/entities"
+	entities "katou-megumi/pkg/entities/generated"
 	"katou-megumi/pkg/utils"
 	"strconv"
 
@@ -23,10 +23,10 @@ func AsmaulHusnaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger
 		}
 
 		loopAsmaulHusnaMessage(0, 20, asmaulHusnaResponse, s, m, logger)
-		loopAsmaulHusnaMessage(20, 40, asmaulHusnaResponse, s, m, logger)
-		loopAsmaulHusnaMessage(40, 60, asmaulHusnaResponse, s, m, logger)
-		loopAsmaulHusnaMessage(60, 80, asmaulHusnaResponse, s, m, logger)
-		loopAsmaulHusnaMessage(80, 98, asmaulHusnaResponse, s, m, logger)
+		loopAsmaulHusnaMessage(21, 40, asmaulHusnaResponse, s, m, logger)
+		loopAsmaulHusnaMessage(41, 60, asmaulHusnaResponse, s, m, logger)
+		loopAsmaulHusnaMessage(61, 80, asmaulHusnaResponse, s, m, logger)
+		loopAsmaulHusnaMessage(81, 98, asmaulHusnaResponse, s, m, logger)
 
 		return
 	}
@@ -34,7 +34,7 @@ func AsmaulHusnaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger
 	if number, err := strconv.Atoi(command); err == nil {
 		asmaulHusnaResponse := getAsmaulHusnaByUrutan(number, utils.Env().ASMAUL_HUSNA_API_URL, s, m, logger)
 
-		if asmaulHusnaResponse.Data.Urutan == 0 {
+		if asmaulHusnaResponse == nil || asmaulHusnaResponse.Data.Urutan == 0 {
 			utils.MessageWithReply(s, m, "Asmaul Husna tidak ditemukan", logger)
 			logger.Error("Asmaul Husna tidak ditemukan", zap.Error(errors.New("Asmaul Husna tidak ditemukan"+command)))
 			return
@@ -46,7 +46,7 @@ func AsmaulHusnaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger
 
 	asmaulHusnaResponse := getAsmaulHusnaByLatin(command, utils.Env().ASMAUL_HUSNA_API_URL, s, m, logger)
 
-	if asmaulHusnaResponse.Data.Urutan == 0 {
+	if asmaulHusnaResponse == nil || asmaulHusnaResponse.Data.Urutan == 0 {
 		utils.MessageWithReply(s, m, "Asmaul Husna tidak ditemukan", logger)
 		logger.Error("Asmaul Husna tidak ditemukan", zap.Error(errors.New("Asmaul Husna tidak ditemukan"+command)))
 		return
@@ -55,7 +55,7 @@ func AsmaulHusnaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger
 	utils.MessageWithReply(s, m, fmt.Sprintf("%d - %s - %s - %s", asmaulHusnaResponse.Data.Urutan, asmaulHusnaResponse.Data.Latin, asmaulHusnaResponse.Data.Arab, asmaulHusnaResponse.Data.Arti), logger)
 }
 
-func loopAsmaulHusnaMessage(start int, end int, asmaulHusnaResponse []entities.AsmaulHusna, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) {
+func loopAsmaulHusnaMessage(start int, end int, asmaulHusnaResponse []*entities.AsmaulHusna, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) {
 	content := ""
 
 	for _, v := range asmaulHusnaResponse[start:end] {
@@ -65,7 +65,7 @@ func loopAsmaulHusnaMessage(start int, end int, asmaulHusnaResponse []entities.A
 	utils.MessageWithReply(s, m, content, logger)
 }
 
-func getAllAsmaulHusna(ASMAUL_HUSNA_API_URL string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) []entities.AsmaulHusna {
+func getAllAsmaulHusna(ASMAUL_HUSNA_API_URL string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) []*entities.AsmaulHusna {
 	body := utils.Get(ASMAUL_HUSNA_API_URL+"/api/all", s, m, logger)
 
 	var asmaulHusnaResponse entities.AsmaulHusnaResponse
@@ -79,7 +79,7 @@ func getAllAsmaulHusna(ASMAUL_HUSNA_API_URL string, s *discordgo.Session, m *dis
 	return asmaulHusnaResponse.Data
 }
 
-func getAsmaulHusnaByUrutan(urutan int, ASMAUL_HUSNA_API_URL string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) entities.AsmaulHusnaByLatinOrUrutanResponse {
+func getAsmaulHusnaByUrutan(urutan int, ASMAUL_HUSNA_API_URL string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) *entities.AsmaulHusnaByLatinOrUrutanResponse {
 	body := utils.Get(ASMAUL_HUSNA_API_URL+"/api/"+strconv.Itoa(urutan), s, m, logger)
 
 	var asmaulHusnaResponse entities.AsmaulHusnaByLatinOrUrutanResponse
@@ -88,13 +88,13 @@ func getAsmaulHusnaByUrutan(urutan int, ASMAUL_HUSNA_API_URL string, s *discordg
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error unmarshalling Asma'ul Husna", logger)
 		logger.Error("Error unmarshalling Asmaul Husna", zap.Error(err))
-		return entities.AsmaulHusnaByLatinOrUrutanResponse{}
+		return nil
 	}
 
-	return asmaulHusnaResponse
+	return &asmaulHusnaResponse
 }
 
-func getAsmaulHusnaByLatin(latin string, ASMAUL_HUSNA_API_URL string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) entities.AsmaulHusnaByLatinOrUrutanResponse {
+func getAsmaulHusnaByLatin(latin string, ASMAUL_HUSNA_API_URL string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) *entities.AsmaulHusnaByLatinOrUrutanResponse {
 	body := utils.Get(ASMAUL_HUSNA_API_URL+"/api/latin/"+latin, s, m, logger)
 
 	var asmaulHusnaResponse entities.AsmaulHusnaByLatinOrUrutanResponse
@@ -102,8 +102,8 @@ func getAsmaulHusnaByLatin(latin string, ASMAUL_HUSNA_API_URL string, s *discord
 	err := json.Unmarshal(body, &asmaulHusnaResponse)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error unmarshalling Asmaul Husna", logger)
-		return entities.AsmaulHusnaByLatinOrUrutanResponse{}
+		return nil
 	}
 
-	return asmaulHusnaResponse
+	return &asmaulHusnaResponse
 }

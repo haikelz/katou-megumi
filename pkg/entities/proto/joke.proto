@@ -1,0 +1,23 @@
+syntax = "proto3";
+package entities;
+
+option go_package = "katou_megumi/pkg/entities/generated";
+
+message JokeTextResponse {
+	int32 status = 1;
+	string end_point = 2;
+	string method = 3;
+	string data = 4;
+}
+
+message JokeImageData {
+	string url= 1;
+	string source= 2;
+}
+
+message JokeImageResponse {
+	int32 status = 1;
+	string end_point = 2;
+	string method = 3;
+	JokeImageData data = 4;
+}

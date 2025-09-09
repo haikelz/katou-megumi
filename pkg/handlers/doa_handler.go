@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"katou-megumi/pkg/entities"
+	entities "katou-megumi/pkg/entities/generated"
 	"katou-megumi/pkg/utils"
 
 	"github.com/bwmarrin/discordgo"
@@ -21,5 +21,5 @@ func DoaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Lo
 		return
 	}
 
-	utils.MessageWithReply(s, m, fmt.Sprintf("%d - %s - %s - %s", doaResponse[0].ID, doaResponse[0].Doa, doaResponse[0].Ayat, doaResponse[0].Artinya, command), logger)
+	utils.MessageWithReply(s, m, fmt.Sprintf("%d - %s - %s - %s", doaResponse[0].Id, doaResponse[0].Doa, doaResponse[0].Ayat, doaResponse[0].Artinya, command), logger)
 }
