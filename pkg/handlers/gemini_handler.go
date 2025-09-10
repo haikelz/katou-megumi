@@ -60,7 +60,10 @@ func GeminiHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap
 			return
 		}
 
-		utils.MessageWithReply(s, m, response.Text(), logger)
+		utils.MessageWithEmbedReply(s, m, &discordgo.MessageEmbed{
+			Title:       command,
+			Description: response.Text(),
+		}, logger)
 	} else {
 		response, err := client.Models.GenerateContent(context.Background(), utils.GEMINI_MODEL, []*genai.Content{
 			{
@@ -86,6 +89,9 @@ func GeminiHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap
 			return
 		}
 
-		utils.MessageWithReply(s, m, response.Text(), logger)
+		utils.MessageWithEmbedReply(s, m, &discordgo.MessageEmbed{
+			Title:       command,
+			Description: response.Text(),
+		}, logger)
 	}
 }
