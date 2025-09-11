@@ -1,0 +1,52 @@
+syntax = "proto3";
+package entities;
+
+option go_package = "katou_megumi/pkg/entities/generated";
+
+message Jadwal {
+	string imsak = 1;
+	string subuh = 2;
+	string terbit = 3;
+	string dhuha = 4;
+	string dzuhur = 5;
+	string ashar = 6;
+	string maghrib = 7;
+	string isya = 8;
+	string date = 9;
+}
+
+message JadwalSholat {
+	int32 id = 1;
+	string lokasi = 2;
+	string daerah = 3;
+	Jadwal jadwal = 4;
+}
+
+message JadwalSholaCityIdRequest {
+	string path = 1;
+	string keyword = 2;
+}
+
+message JadwalSholaCityIdResponseData {
+	string id = 1;
+	string lokasi = 2;
+}
+
+message JadwalSholaCityIdResponse {
+	bool status = 1;
+	JadwalSholaCityIdRequest request = 2;
+    repeated JadwalSholaCityIdResponseData Data = 3;
+}
+
+message JadwalSholatRequest {
+	string path = 1;
+	string year = 2;
+	string month = 3;
+	string date = 4;
+}
+
+message JadwalSholatResponse {
+	bool                status = 1;
+	JadwalSholatRequest request = 2;
+	JadwalSholat        data = 3;
+}

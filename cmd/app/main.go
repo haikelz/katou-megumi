@@ -4,6 +4,7 @@ import (
 	"katou-megumi/pkg/configs"
 	"katou-megumi/pkg/handlers"
 	"katou-megumi/pkg/utils"
+	"log"
 	"os"
 	"os/signal"
 	"strings"
@@ -15,10 +16,11 @@ import (
 func main() {
 	logger := configs.NewZap()
 
-	discord := configs.NewDiscord(utils.Env().DISCORD_TOKEN)
+	discordToken := utils.Env().DISCORD_TOKEN
+	discord := configs.NewDiscord(discordToken)
 
 	discord.Client.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
-		handlers.UserInfoHandler(s, r, logger)
+		log.Printf("Logged in as: %v#%v", r.User.Username, r.User.Discriminator)
 	})
 
 	discord.Client.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -30,7 +32,6 @@ func main() {
 			s.ChannelTyping(m.ChannelID)
 			handlers.InfoHandler(s, m, logger, command)
 		}
-
 		if splitMessage[0] == "!ping" {
 			s.ChannelTyping(m.ChannelID)
 			handlers.PingHandler(s, m, logger, command)

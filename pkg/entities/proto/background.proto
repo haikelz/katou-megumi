@@ -1,0 +1,30 @@
+syntax = "proto3";
+package entities;
+
+option go_package = "katou_megumi/pkg/entities/generated";
+
+message BackgroundResult {
+	bool success = 1;
+	string base64 = 2;
+	string message = 3;
+}
+
+message RemoveBgRequest {
+	string image_file_b64 = 1;
+	string bg_color = 2;
+}
+
+message RemoveBgResponseData {
+	string result_b64 = 1;
+}
+
+message RemoveBgResponse {
+	RemoveBgResponseData data = 1;
+}
+
+// Alternative response structure for some APIs
+message RemoveBgResponseAlt {
+	string result = 1;
+	bool success = 2;
+	string message = 3;
+}

@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"katou-megumi/pkg/entities"
+	entities "katou-megumi/pkg/entities/generated"
 	"katou-megumi/pkg/utils"
 	"time"
 
@@ -65,8 +65,8 @@ func getCityId(s *discordgo.Session, m *discordgo.MessageCreate, cityName string
 	return jadwalSholatResponse.Data[0].Id, nil
 }
 
-func getJadwalSholat(s *discordgo.Session, m *discordgo.MessageCreate, cityId string, logger *zap.Logger) (entities.JadwalSholatResponse, error) {
-	today := time.Now().Format("2006-01-02")
+func getJadwalSholat(s *discordgo.Session, m *discordgo.MessageCreate, cityId string, logger *zap.Logger) (*entities.JadwalSholatResponse, error) {
+	today := time.Now().Format(utils.TIME_FORMAT)
 
 	body := utils.Get(utils.Env().QURAN_API_URL+"/v2/sholat/jadwal/"+cityId+"/"+today, s, m, logger)
 
@@ -75,8 +75,8 @@ func getJadwalSholat(s *discordgo.Session, m *discordgo.MessageCreate, cityId st
 	if err != nil {
 		utils.MessageWithReply(s, m, "Maaf, terjadi kesalahan saat mengambil data jadwal sholat!", logger)
 		logger.Error("Error unmarshalling body", zap.Error(err))
-		return entities.JadwalSholatResponse{}, err
+		return nil, err
 	}
 
-	return jadwalSholatResponse, nil
+	return &jadwalSholatResponse, nil
 }
