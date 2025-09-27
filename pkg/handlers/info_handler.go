@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"katou-megumi/pkg/utils"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/zap"
@@ -12,7 +13,9 @@ func InfoHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.L
 		return
 	}
 
-	content := `
+	var builder strings.Builder
+
+	builder.WriteString(`
 # 🤖 Katou Megumi Bot
 *My Istri Discord Bot*
 
@@ -42,12 +45,12 @@ func InfoHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.L
 ---
 
 *Selamat menggunakan Katou Megumi Bot! 💜*	
-`
+`)
 
 	katouMegumiImage := "https://avatars.githubusercontent.com/u/77146709?v=4"
 
 	var katouMegumiImageEmbed = &discordgo.MessageEmbed{
-		Description: content,
+		Description: builder.String(),
 		Image:       &discordgo.MessageEmbedImage{URL: katouMegumiImage},
 	}
 	utils.MessageWithEmbedReply(s, m, katouMegumiImageEmbed, logger)

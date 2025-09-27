@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	entities "katou-megumi/pkg/entities/generated"
 	"katou-megumi/pkg/utils"
+	"sync"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/zap"
@@ -31,10 +32,20 @@ func JokeHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.L
 }
 
 func getJokeImage(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) (string, error) {
-	body := utils.Get(utils.Env().JOKES_API_URL+"/api/image/random", s, m, logger)
+	wg := &sync.WaitGroup{}
+	ch := make(chan utils.HttpGetResponse, 1)
+	go utils.Get(utils.Env().JOKES_API_URL+"/api/image/random", s, m, logger, wg, ch)
+	wg.Wait()
+	close(ch)
+
+	response := <-ch
+	if response.Error != nil {
+		logger.Error("Error fetching jokes", zap.Error(response.Error))
+		return "", response.Error
+	}
 
 	var jokeImageResponse entities.JokeImageResponse
-	err := json.Unmarshal(body, &jokeImageResponse)
+	err := json.Unmarshal(response.Body, &jokeImageResponse)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error unmarshalling jokes", logger)
 		logger.Error("Error unmarshalling jokes", zap.Error(err))
@@ -45,10 +56,20 @@ func getJokeImage(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.
 }
 
 func getJokeText(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) (string, error) {
-	body := utils.Get(utils.Env().JOKES_API_URL+"/api/text/random", s, m, logger)
+	wg := &sync.WaitGroup{}
+	ch := make(chan utils.HttpGetResponse, 1)
+	go utils.Get(utils.Env().JOKES_API_URL+"/api/text/random", s, m, logger, wg, ch)
+	wg.Wait()
+	close(ch)
+
+	response := <-ch
+	if response.Error != nil {
+		logger.Error("Error fetching jokes", zap.Error(response.Error))
+		return "", response.Error
+	}
 
 	var jokeTextResponse entities.JokeTextResponse
-	err := json.Unmarshal(body, &jokeTextResponse)
+	err := json.Unmarshal(response.Body, &jokeTextResponse)
 	if err != nil {
 		logger.Error("Error unmarshalling jokes", zap.Error(err))
 		return "", err

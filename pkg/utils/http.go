@@ -3,17 +3,29 @@ package utils
 import (
 	"io"
 	"net/http"
+	"sync"
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/zap"
 )
 
-func Get(url string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) []byte {
+type HttpGetResponse struct {
+	Body  []byte
+	Error error
+}
+
+func Get(url string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, wg *sync.WaitGroup, ch chan HttpGetResponse) {
+	defer wg.Done()
+
 	response, err := http.Get(url)
 	if err != nil {
 		MessageWithReply(s, m, "Error fetching data", logger)
 		logger.Error("Error fetching data", zap.Error(err))
-		return nil
+		ch <- HttpGetResponse{
+			Body:  nil,
+			Error: err,
+		}
+		return
 	}
 	defer response.Body.Close()
 
@@ -21,8 +33,15 @@ func Get(url string, s *discordgo.Session, m *discordgo.MessageCreate, logger *z
 	if err != nil {
 		MessageWithReply(s, m, "Error reading data", logger)
 		logger.Error("Error reading data", zap.Error(err))
-		return nil
+		ch <- HttpGetResponse{
+			Body:  nil,
+			Error: err,
+		}
+		return
 	}
 
-	return body
+	ch <- HttpGetResponse{
+		Body:  body,
+		Error: nil,
+	}
 }
