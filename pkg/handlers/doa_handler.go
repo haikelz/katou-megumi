@@ -8,10 +8,10 @@ import (
 	"sync"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 )
 
-func DoaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, command string) {
+func DoaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger, command string) {
 	wg := &sync.WaitGroup{}
 	ch := make(chan utils.HttpGetResponse, 1)
 	go utils.Get(utils.Env().DOA_API_URL+"/api/doa/v1/random", s, m, logger, wg, ch)
@@ -21,7 +21,7 @@ func DoaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Lo
 	response := <-ch
 	if response.Error != nil {
 		utils.MessageWithReply(s, m, "Error fetching do'a", logger)
-		logger.Error("Error fetching do'a", zap.Error(response.Error))
+		logger.Error().Err(response.Error).Msg("Error fetching do'a")
 		return
 	}
 
@@ -29,7 +29,7 @@ func DoaHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Lo
 	err := json.Unmarshal(response.Body, &doaResponse)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error unmarshalling do'a", logger)
-		logger.Error("Error unmarshalling do'a", zap.Error(err))
+		logger.Error().Err(err).Msg("Error unmarshalling do'a")
 		return
 	}
 

@@ -9,10 +9,10 @@ import (
 	"sync"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 )
 
-func QuoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, command string) {
+func QuoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger, command string) {
 	if command == "" {
 		quotes := GetQuotes(s, m, logger)
 		_, err := s.ChannelMessageSendReply(m.ChannelID, quotes, &discordgo.MessageReference{
@@ -21,7 +21,7 @@ func QuoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.
 			GuildID:   m.GuildID,
 		})
 		if err != nil {
-			logger.Error("Error sending message", zap.Error(err))
+			logger.Error().Err(err).Msg("Error sending message")
 			return
 		}
 		return
@@ -32,7 +32,7 @@ func QuoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.
 	utils.MessageWithReply(s, m, quote, logger)
 }
 
-func GetQuote(anime string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) string {
+func GetQuote(anime string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger) string {
 	wg := &sync.WaitGroup{}
 	ch := make(chan utils.HttpGetResponse, 1)
 	go utils.Get(utils.Env().ANIME_QUOTE_API_URL+"/api/getbyanime?anime="+anime+"&page=1", s, m, logger, wg, ch)
@@ -41,14 +41,14 @@ func GetQuote(anime string, s *discordgo.Session, m *discordgo.MessageCreate, lo
 
 	response := <-ch
 	if response.Error != nil {
-		logger.Error("Error fetching quote", zap.Error(response.Error))
+		logger.Error().Err(response.Error).Msg("Error fetching quote")
 		return ""
 	}
 
 	var quoteResponse entities.QuoteResponse
 	err := json.Unmarshal(response.Body, &quoteResponse)
 	if err != nil {
-		logger.Error("Error unmarshalling quote", zap.Error(err))
+		logger.Error().Err(err).Msg("Error unmarshalling quote")
 		return ""
 	}
 
@@ -58,8 +58,7 @@ func GetQuote(anime string, s *discordgo.Session, m *discordgo.MessageCreate, lo
 	return builder.String()
 }
 
-func GetQuotes(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger) string {
-
+func GetQuotes(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger) string {
 	wg := &sync.WaitGroup{}
 	ch := make(chan utils.HttpGetResponse, 1)
 	go utils.Get(utils.Env().ANIME_QUOTE_API_URL+"/api/getrandom", s, m, logger, wg, ch)
@@ -68,14 +67,14 @@ func GetQuotes(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Log
 
 	response := <-ch
 	if response.Error != nil {
-		logger.Error("Error fetching quote", zap.Error(response.Error))
+		logger.Error().Err(response.Error).Msg("Error fetching quote")
 		return ""
 	}
 
 	var quoteResponse entities.QuotesResponse
 	err := json.Unmarshal(response.Body, &quoteResponse)
 	if err != nil {
-		logger.Error("Error unmarshalling quote", zap.Error(err))
+		logger.Error().Err(err).Msg("Error unmarshalling quote")
 		return ""
 	}
 

@@ -8,11 +8,11 @@ import (
 	"katou-megumi/pkg/utils"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 	"google.golang.org/genai"
 )
 
-func GeminiHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, command string) {
+func GeminiHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger, command string) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
@@ -26,7 +26,7 @@ func GeminiHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap
 		imageBytes, err := base64.StdEncoding.DecodeString(base64Image)
 		if err != nil {
 			utils.MessageWithReply(s, m, "Error decoding image", logger)
-			logger.Error("Error decoding image", zap.Error(err))
+			logger.Error().Err(err).Msg("Error decoding image")
 			return
 		}
 
@@ -50,13 +50,13 @@ func GeminiHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap
 		})
 		if err != nil {
 			utils.MessageWithReply(s, m, "Error generating content", logger)
-			logger.Error("Error generating content", zap.Error(err))
+			logger.Error().Err(err).Msg("Error generating content")
 			return
 		}
 
 		if response.Text() == "" {
 			utils.MessageWithReply(s, m, "Error generating content", logger)
-			logger.Error("Error generating content", zap.Error(errors.New("error generating content")))
+			logger.Error().Err(errors.New("error generating content")).Msg("Error generating content")
 			return
 		}
 
@@ -79,13 +79,13 @@ func GeminiHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap
 		})
 		if err != nil {
 			utils.MessageWithReply(s, m, "Error generating content", logger)
-			logger.Error("Error generating content", zap.Error(err))
+			logger.Error().Err(err).Msg("Error generating content")
 			return
 		}
 
 		if response.Text() == "" {
 			utils.MessageWithReply(s, m, "Error generating content", logger)
-			logger.Error("Error generating content", zap.Error(errors.New("error generating content")))
+			logger.Error().Err(errors.New("error generating content")).Msg("Error generating content")
 			return
 		}
 

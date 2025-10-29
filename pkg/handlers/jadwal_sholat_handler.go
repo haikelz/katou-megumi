@@ -9,23 +9,23 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 )
 
-func JadwalSholatHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, command string) {
+func JadwalSholatHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger, command string) {
 	if len(command) <= 2 {
 		if len(command) == 0 {
-			logger.Info("User" + m.Author.Username + "is requesting jadwal sholat by default")
+			logger.Info().Msg("User" + m.Author.Username + "is requesting jadwal sholat by default")
 			utils.MessageWithReply(s, m, "Ini adalah perintah untuk mendapatkan jadwal sholat sesuai dengan nama daerah yang dimasukkan. Cukup ketik *!jadwalsholat <your_daerah>*", logger)
 		} else {
-			logger.Error("Get jadwalsholat failed " + command + " from " + m.Author.Username)
+			logger.Error().Msg("Get jadwalsholat failed " + command + " from " + m.Author.Username)
 			utils.MessageWithReply(s, m, "Maaf, panjang karakter daerah yang dimasukkan tidak boleh kurang dari atau sama dengan 2!", logger)
 		}
 	}
 
 	cityId, err := getCityId(s, m, command, logger)
 	if err != nil {
-		logger.Error("ID Kota tidak ditemukan!", zap.Error(err))
+		logger.Error().Err(err).Msg("ID Kota tidak ditemukan!")
 		utils.MessageWithReply(s, m, "Maaf, terjadi kesalahan saat mengambil data jadwal sholat!", logger)
 		return
 	}
@@ -33,7 +33,7 @@ func JadwalSholatHandler(s *discordgo.Session, m *discordgo.MessageCreate, logge
 	jadwalSholatResponse, err := getJadwalSholat(s, m, cityId, logger)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Maaf, terjadi kesalahan saat mengambil data jadwal sholat!", logger)
-		logger.Error("Data jadwal sholat tidak ditemukan!", zap.Error(err))
+		logger.Error().Err(err).Msg("Data jadwal sholat tidak ditemukan!")
 		return
 	}
 
@@ -54,7 +54,7 @@ func JadwalSholatHandler(s *discordgo.Session, m *discordgo.MessageCreate, logge
 	utils.MessageWithReply(s, m, builder.String(), logger)
 }
 
-func getCityId(s *discordgo.Session, m *discordgo.MessageCreate, cityName string, logger *zap.Logger) (string, error) {
+func getCityId(s *discordgo.Session, m *discordgo.MessageCreate, cityName string, logger *zerolog.Logger) (string, error) {
 	wg := &sync.WaitGroup{}
 	ch := make(chan utils.HttpGetResponse, 1)
 	go utils.Get(utils.Env().QURAN_API_URL+"/v2/sholat/kota/cari/"+cityName, s, m, logger, wg, ch)
@@ -64,7 +64,7 @@ func getCityId(s *discordgo.Session, m *discordgo.MessageCreate, cityName string
 	response := <-ch
 	if response.Error != nil {
 		utils.MessageWithReply(s, m, "Maaf, terjadi kesalahan saat mengambil data jadwal sholat!", logger)
-		logger.Error("Error fetching jadwal sholat", zap.Error(response.Error))
+		logger.Error().Err(response.Error).Msg("Error fetching jadwal sholat")
 		return "", response.Error
 	}
 
@@ -73,14 +73,14 @@ func getCityId(s *discordgo.Session, m *discordgo.MessageCreate, cityName string
 	err := json.Unmarshal(response.Body, &jadwalSholatResponse)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Maaf, terjadi kesalahan saat mengambil data jadwal sholat!", logger)
-		logger.Error("Error unmarshalling body", zap.Error(err))
+		logger.Error().Err(err).Msg("Error unmarshalling body")
 		return "", err
 	}
 
 	return jadwalSholatResponse.Data[0].Id, nil
 }
 
-func getJadwalSholat(s *discordgo.Session, m *discordgo.MessageCreate, cityId string, logger *zap.Logger) (*entities.JadwalSholatResponse, error) {
+func getJadwalSholat(s *discordgo.Session, m *discordgo.MessageCreate, cityId string, logger *zerolog.Logger) (*entities.JadwalSholatResponse, error) {
 	today := time.Now().Format(utils.TIME_FORMAT)
 
 	wg := &sync.WaitGroup{}
@@ -92,7 +92,7 @@ func getJadwalSholat(s *discordgo.Session, m *discordgo.MessageCreate, cityId st
 	response := <-ch
 	if response.Error != nil {
 		utils.MessageWithReply(s, m, "Maaf, terjadi kesalahan saat mengambil data jadwal sholat!", logger)
-		logger.Error("Error fetching jadwal sholat", zap.Error(response.Error))
+		logger.Error().Err(response.Error).Msg("Error fetching jadwal sholat")
 		return nil, response.Error
 	}
 
@@ -100,7 +100,7 @@ func getJadwalSholat(s *discordgo.Session, m *discordgo.MessageCreate, cityId st
 	err := json.Unmarshal(response.Body, &jadwalSholatResponse)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Maaf, terjadi kesalahan saat mengambil data jadwal sholat!", logger)
-		logger.Error("Error unmarshalling body", zap.Error(err))
+		logger.Error().Err(err).Msg("Error unmarshalling body")
 		return nil, err
 	}
 

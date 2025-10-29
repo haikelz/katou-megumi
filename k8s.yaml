@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: katou-megumi
+  labels:
+    app: katou-megumi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: katou-megumi
+  template:
+    metadata:
+      labels:
+        app: katou-megumi
+    spec:
+      containers:
+        - name: katou-megumi
+          image: haikelilham/katou-megumi:latest
+          envFrom:
+            - secretRef:
+                name: katou-megumi-env
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+

@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 )
 
-func ShutdownHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, command string) {
+func ShutdownHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger, command string) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}

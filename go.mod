@@ -1,12 +1,12 @@
 module katou-megumi
 
-go 1.23.1
+go 1.24.0
 
 require (
 	github.com/bwmarrin/discordgo v0.29.0
 	github.com/otiai10/gosseract/v2 v2.4.1
 	github.com/spf13/viper v1.20.1
-	go.uber.org/zap v1.27.0
+	github.com/rs/zerolog v1.34.0
 	google.golang.org/genai v1.21.0
 	google.golang.org/protobuf v1.36.8
 )
@@ -25,6 +25,8 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.4 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.1 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
@@ -39,7 +41,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241223144023-3abc09e42ca8 // indirect
 	google.golang.org/grpc v1.67.3 // indirect

@@ -6,10 +6,10 @@ import (
 	"net/http"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 )
 
-func ImageUrlToBase64(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, imageUrl string) string {
+func ImageUrlToBase64(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger, imageUrl string) string {
 	client := &http.Client{}
 
 	image, err := client.Get(imageUrl)

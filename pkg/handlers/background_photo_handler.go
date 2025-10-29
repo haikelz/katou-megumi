@@ -11,10 +11,10 @@ import (
 	"net/http"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 )
 
-func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, command string) {
+func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger, command string) {
 	if command == "info" {
 		utils.MessageWithReply(s, m, "Ini adalah perintah untuk mengubah warna background dari sebuah foto. Nama warna yang dimasukkan harus dalam bahasa Inggris.  Contoh: *!editphoto red*", logger)
 		return
@@ -45,7 +45,7 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 	jsonData, err := json.Marshal(&removeBgData)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error marshalling data", logger)
-		logger.Error("Error marshalling data", zap.Error(err))
+		logger.Error().Err(err).Msg("Error marshalling data")
 		return
 	}
 
@@ -54,7 +54,7 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error creating request", logger)
-		logger.Error("Error creating request", zap.Error(err))
+		logger.Error().Err(err).Msg("Error creating request")
 		return
 	}
 
@@ -65,7 +65,7 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 	response, err := client.Do(req)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error sending request to API", logger)
-		logger.Error("Error sending request to API", zap.Error(err))
+		logger.Error().Err(err).Msg("Error sending request to API")
 		return
 	}
 	defer response.Body.Close()
@@ -73,16 +73,14 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 	if response.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(response.Body)
 		utils.MessageWithReply(s, m, fmt.Sprintf("API Error: %s", response.Status), logger)
-		logger.Error("API Error",
-			zap.Int("status", response.StatusCode),
-			zap.String("body", string(body)))
+		logger.Error().Int("status", response.StatusCode).Str("body", string(body)).Msg("API Error")
 		return
 	}
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error reading response body", logger)
-		logger.Error("Error reading response body", zap.Error(err))
+		logger.Error().Err(err).Msg("Error reading response body")
 		return
 	}
 
@@ -97,7 +95,7 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 			resultBase64 = apiResponseAlt.Result
 		} else {
 			utils.MessageWithReply(s, m, "Error parsing API response", logger)
-			logger.Error("Error parsing API response", zap.Error(err))
+			logger.Error().Err(err).Msg("Error parsing API response")
 			return
 		}
 	}
@@ -105,7 +103,7 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 	processedImageBytes, err := base64.StdEncoding.DecodeString(resultBase64)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error decoding processed image", logger)
-		logger.Error("Error decoding processed image", zap.Error(err))
+		logger.Error().Err(err).Msg("Error decoding processed image")
 		return
 	}
 
@@ -117,7 +115,7 @@ func BackgroundPhotoHandler(s *discordgo.Session, m *discordgo.MessageCreate, lo
 	)
 	if err != nil {
 		utils.MessageWithReply(s, m, "Error sending processed image", logger)
-		logger.Error("Error sending processed image", zap.Error(err))
+		logger.Error().Err(err).Msg("Error sending processed image")
 		return
 	}
 }

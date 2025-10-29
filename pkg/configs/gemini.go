@@ -3,7 +3,6 @@ package configs
 import (
 	"context"
 
-	"go.uber.org/zap"
 	"google.golang.org/genai"
 )
 
@@ -13,7 +12,7 @@ func NewGemini(ctx context.Context, apiKey string) *genai.Client {
 		Backend: genai.BackendGeminiAPI,
 	})
 	if err != nil {
-		zap.L().Error("Failed to create Gemini client", zap.Error(err))
+		Log.Error().Err(err).Msg("Failed to create Gemini client")
 		panic(err)
 	}
 

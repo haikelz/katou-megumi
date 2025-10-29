@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/bwmarrin/discordgo"
-	"go.uber.org/zap"
+	"github.com/rs/zerolog"
 )
 
 type HttpGetResponse struct {
@@ -14,13 +14,13 @@ type HttpGetResponse struct {
 	Error error
 }
 
-func Get(url string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zap.Logger, wg *sync.WaitGroup, ch chan HttpGetResponse) {
+func Get(url string, s *discordgo.Session, m *discordgo.MessageCreate, logger *zerolog.Logger, wg *sync.WaitGroup, ch chan HttpGetResponse) {
 	defer wg.Done()
 
 	response, err := http.Get(url)
 	if err != nil {
 		MessageWithReply(s, m, "Error fetching data", logger)
-		logger.Error("Error fetching data", zap.Error(err))
+		logger.Error().Err(err).Msg("Error fetching data")
 		ch <- HttpGetResponse{
 			Body:  nil,
 			Error: err,
@@ -32,7 +32,7 @@ func Get(url string, s *discordgo.Session, m *discordgo.MessageCreate, logger *z
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		MessageWithReply(s, m, "Error reading data", logger)
-		logger.Error("Error reading data", zap.Error(err))
+		logger.Error().Err(err).Msg("Error reading data")
 		ch <- HttpGetResponse{
 			Body:  nil,
 			Error: err,
