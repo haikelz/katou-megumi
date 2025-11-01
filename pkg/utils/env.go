@@ -11,7 +11,6 @@ import (
 func Env() entities.EnvVariables {
 	v := configs.NewViper()
 
-	_ = v.BindEnv("DATABASE_URL")
 	_ = v.BindEnv("DISCORD_TOKEN")
 	_ = v.BindEnv("REMOVE_BG_API_KEY")
 	_ = v.BindEnv("REMOVE_BG_API_URL")
