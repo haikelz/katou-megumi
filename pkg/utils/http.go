@@ -25,7 +25,6 @@ func Get(url string, s *discordgo.Session, m *discordgo.MessageCreate, logger *z
 			Body:  nil,
 			Error: err,
 		}
-		return
 	}
 	defer response.Body.Close()
 
@@ -37,7 +36,6 @@ func Get(url string, s *discordgo.Session, m *discordgo.MessageCreate, logger *z
 			Body:  nil,
 			Error: err,
 		}
-		return
 	}
 
 	ch <- HttpGetResponse{
