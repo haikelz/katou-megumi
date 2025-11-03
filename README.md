@@ -68,58 +68,6 @@
    air -c .air.toml
    ```
 
-## Project Structure
-
-```
-katou-megumi/
-├── cmd/
-│   └── app/
-│       └── main.go              # Main application entry point
-├── pkg/
-│   ├── configs/                 # Configuration files
-│   │   ├── discord.go           # Discord client configuration
-│   │   ├── gemini.go            # Google Gemini AI configuration
-│   │   └── zap.go               # Logging configuration
-│   ├── entities/                # Data structures
-│   │   ├── asmaul_husna.go      # Asmaul Husna data
-│   │   ├── doa.go               # Prayer data
-│   │   ├── jadwal_sholat.go     # Prayer times data
-│   │   ├── joke.go              # Joke data
-│   │   └── quote.go             # Quote data
-│   ├── handlers/                # Command handlers
-│   │   ├── asmaul_husna_handler.go
-│   │   ├── background_photo_handler.go
-│   │   ├── doa_handler.go
-│   │   ├── gemini_handler.go
-│   │   ├── info_handler.go
-│   │   ├── jadwal_sholat_handler.go
-│   │   ├── joke_handler.go
-│   │   ├── ping_handler.go
-│   │   ├── quote_handler.go
-│   │   └── salam_handler.go
-│   └── utils/                   # Utility functions
-│       ├── date.go              # Date utilities
-│       ├── discord.go           # Discord utilities
-│       ├── env.go               # Environment loading
-│       └── string.go            # String utilities
-├── go.mod                       # Go module file
-├── go.sum                       # Go dependencies checksum
-└── README.md                    # Project documentation
-```
-
-This documentation provides a comprehensive overview of your Discord bot project, including:
-
-1. **Feature overview** - All the commands and capabilities
-2. **Installation instructions** - Step-by-step setup guide
-3. **Project structure** - Clear organization of the codebase
-4. **Configuration details** - How to set up the required APIs
-5. **Development guidelines** - How to build and contribute
-6. **Dependencies** - External services and libraries used
-
-The documentation is written in English as requested and follows standard README conventions with proper markdown formatting, emojis for visual appeal, and clear sections for easy navigation.
-
-## Configuration
-
 ### Discord Bot Setup
 
 1. Create a Discord application at [Discord Developer Portal](https://discord.com/developers/applications)
@@ -142,8 +90,16 @@ air -c .air.toml
 
 ### Building the Project
 
+1. `go build`
+
 ```bash
 go build -o bin/bot cmd/app/main.go
+```
+
+2. Docker
+
+```bash
+docker buildx bake && docker compose up -d
 ```
 
 ### Running Tests
@@ -152,26 +108,8 @@ go build -o bin/bot cmd/app/main.go
 go test ./...
 ```
 
-### Code Structure
-
-- **Handlers**: Each command has its own handler function in the `pkg/handlers/` directory
-- **Entities**: Data structures are defined in `pkg/entities/`
-- **Configs**: Configuration files for external services
-- **Utils**: Helper functions and utilities
-
-## API Dependencies
-
-- **Discord Go**: Discord API wrapper for Go
-- **Google Gemini**: AI language model for question answering
-- **Zap**: Structured logging
-- **Godotenv**: Environment variable management
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 **Created by:** [haikelz](https://github.com/haikelz/)
-
-## 🆘 Support
-
-If you encounter any issues or have questions, please open an issue on the GitHub repository.
