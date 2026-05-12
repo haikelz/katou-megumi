@@ -23,18 +23,18 @@ func InfoHandler(s *discordgo.Session, m *discordgo.MessageCreate, logger *zerol
 
 ## 📋 **Daftar Perintah**
 
-- !salam - Memberikan salam kepada pengguna
-- !info - Menampilkan informasi tentang bot
-- !ask - Mengajukan pertanyaan kepada bot
-- !editbackground - Mengedit background profil
-- !sticker - Mengirim sticker
-- !jadwalsholat - Menampilkan jadwal sholat
-- !doa - Menampilkan doa-doa harian
-- !asmaulhusna - Menampilkan Asmaul Husna
-- !jokes - Menampilkan lelucon
-- !animequote - Quote anime random
-- !ocr - Membaca teks dari gambar (Optical Character Recognition)
-- !shutdown - Menutup bot
+- .salam - Memberikan salam kepada pengguna
+- .info - Menampilkan informasi tentang bot
+- .ask - Mengajukan pertanyaan kepada bot
+- .editbackground - Mengedit background profil
+- .sticker - Mengirim sticker
+- .jadwalsholat - Menampilkan jadwal sholat
+- .doa - Menampilkan doa-doa harian
+- .asmaulhusna - Menampilkan Asmaul Husna
+- .jokes - Menampilkan lelucon
+- .animequote - Quote anime random
+- .ocr - Membaca teks dari gambar (Optical Character Recognition)
+- .shutdown - Menutup bot
 
 ---
 

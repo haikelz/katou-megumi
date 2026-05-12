@@ -10,17 +10,17 @@
 
 ### Commands
 
-- **`!info`** - Display bot information and command list
-- **`!ping`** - Check bot response time
-- **`!salam`** - Send greetings to users
-- **`!ask <question>`** - Ask questions using Google Gemini AI (2.5 pro)
-- **`!jadwalsholat <city>`** - Get prayer times for a specific city
-- **`!doa`** - Display daily prayers and supplications
-- **`!asmaulhusna`** - Show the 99 Names of Allah (Asmaul Husna)
-- **`!jokes`** - Share random jokes
-- **`!quote`** - Display inspirational quotes
-- **`!editbackground`** - Edit profile background images
-- **`!shutdown`** - Turn off the bot
+- **`.info`** - Display bot information and command list
+- **`.ping`** - Check bot response time
+- **`.salam`** - Send greetings to users
+- **`.ask <question>`** - Ask questions using Google Gemini AI (2.5 pro)
+- **`.jadwalsholat <city>`** - Get prayer times for a specific city
+- **`.doa`** - Display daily prayers and supplications
+- **`.asmaulhusna`** - Show the 99 Names of Allah (Asmaul Husna)
+- **`.jokes`** - Share random jokes
+- **`.quote`** - Display inspirational quotes
+- **`.editbackground`** - Edit profile background images
+- **`.shutdown`** - Turn off the bot
 
 ## Getting Started
 

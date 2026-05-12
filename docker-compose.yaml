@@ -13,8 +13,8 @@ services:
     working_dir: /app
     command: ["go", "run", "cmd/app/main.go"]
     networks:
-      - katou-megumi-network
+      - dokploy-network
 
 networks:
-  katou-megumi-network:
-    driver: bridge
+  dokploy-network:
+    external: true
